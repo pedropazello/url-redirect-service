@@ -12,3 +12,26 @@ services:
     volumes:
       - .:/app
     command: go run cmd/main.go
+
+  localstack:
+    image: localstack/localstack:4.3.0
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=dynamodb
+      - DEBUG=1
+      - LOCALSTACK_HOST=localhost
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "./init-scripts:/etc/localstack/init/ready.d"
+      - "./localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localstack:4566
+    depends_on:
+      - localstack
