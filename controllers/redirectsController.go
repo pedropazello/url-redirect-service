@@ -5,14 +5,23 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pedropazello/url-redirect-service/usecases"
+	"github.com/pedropazello/url-redirect-service/interfaces"
 )
 
-func GetRedirects(c *gin.Context) {
+type RedirectController struct {
+	usecase interfaces.IRedirectUsecase
+}
+
+func NewRedirectController(usecase interfaces.IRedirectUsecase) *RedirectController {
+	return &RedirectController{
+		usecase: usecase,
+	}
+}
+
+func (rc *RedirectController) GetRedirects(c *gin.Context) {
 	path := c.Param("path")
 
-	redirectURLUseCase := usecases.NewRedirectURLtUseCase()
-	redirectToURL, err := redirectURLUseCase.Execute(c.Request.Context(), path)
+	redirectToURL, err := rc.usecase.Execute(c.Request.Context(), path)
 
 	if err == nil {
 		fmt.Printf("Retrieved name: %v\n", redirectToURL)

@@ -7,13 +7,24 @@ import (
 	"github.com/pedropazello/url-redirect-service/controllers"
 )
 
-func RegisterRoutes(r *gin.Engine) {
-	redirectsGroup := r.Group("/redirects")
+type Routes struct {
+	redirectController *controllers.RedirectController
+}
+
+func NewRoutes(redirectController *controllers.RedirectController) *Routes {
+	return &Routes{
+		redirectController: redirectController,
+	}
+}
+
+func (r Routes) RegisterRoutes(engine *gin.Engine) {
+	redirectsGroup := engine.Group("/redirects")
+
 	{
-		redirectsGroup.GET("/:path", controllers.GetRedirects)
+		redirectsGroup.GET("/:path", r.redirectController.GetRedirects)
 	}
 
-	r.GET("/health", func(c *gin.Context) {
+	engine.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 
