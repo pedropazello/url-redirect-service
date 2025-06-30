@@ -1,0 +1,17 @@
+with-expecter: true
+dir: "{{.InterfaceDir}}"
+mockname: "{{.InterfaceName}}"
+outpkg: mocks
+filename: "{{.MockName}}.go"
+packages:
+  github.com/pedropazello/url-redirect-service/interfaces:
+    interfaces:
+      IDB:
+        config:
+          dir: "mocks"
+      IRedirectsRepository:
+        config:
+          dir: "mocks"
+      IRedirectUsecase:
+        config:
+          dir: "mocks"

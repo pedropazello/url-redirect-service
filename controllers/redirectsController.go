@@ -21,6 +21,8 @@ func NewRedirectController(usecase interfaces.IRedirectUsecase) *RedirectControl
 func (rc *RedirectController) GetRedirects(c *gin.Context) {
 	path := c.Param("path")
 
+	fmt.Println(c.Request.Context())
+
 	redirectToURL, err := rc.usecase.Execute(c.Request.Context(), path)
 
 	if err == nil {
