@@ -21,6 +21,65 @@ func (_m *IDB) EXPECT() *IDB_Expecter {
 	return &IDB_Expecter{mock: &_m.Mock}
 }
 
+// CreateItem provides a mock function with given fields: _a0, insertion
+func (_m *IDB) CreateItem(_a0 context.Context, insertion map[string]any) (map[string]any, error) {
+	ret := _m.Called(_a0, insertion)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateItem")
+	}
+
+	var r0 map[string]any
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, map[string]any) (map[string]any, error)); ok {
+		return rf(_a0, insertion)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, map[string]any) map[string]any); ok {
+		r0 = rf(_a0, insertion)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(map[string]any)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, map[string]any) error); ok {
+		r1 = rf(_a0, insertion)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// IDB_CreateItem_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateItem'
+type IDB_CreateItem_Call struct {
+	*mock.Call
+}
+
+// CreateItem is a helper method to define mock.On call
+//   - _a0 context.Context
+//   - insertion map[string]any
+func (_e *IDB_Expecter) CreateItem(_a0 interface{}, insertion interface{}) *IDB_CreateItem_Call {
+	return &IDB_CreateItem_Call{Call: _e.mock.On("CreateItem", _a0, insertion)}
+}
+
+func (_c *IDB_CreateItem_Call) Run(run func(_a0 context.Context, insertion map[string]any)) *IDB_CreateItem_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(map[string]any))
+	})
+	return _c
+}
+
+func (_c *IDB_CreateItem_Call) Return(_a0 map[string]any, _a1 error) *IDB_CreateItem_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *IDB_CreateItem_Call) RunAndReturn(run func(context.Context, map[string]any) (map[string]any, error)) *IDB_CreateItem_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetItem provides a mock function with given fields: _a0, Id
 func (_m *IDB) GetItem(_a0 context.Context, Id string) (map[string]any, error) {
 	ret := _m.Called(_a0, Id)
