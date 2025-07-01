@@ -2,21 +2,22 @@ package db
 
 import (
 	"context"
-	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/pedropazello/url-redirect-service/interfaces"
 )
 
-func NewDynamoDB() *DynamoDB {
-	return &DynamoDB{}
+func NewDynamoDB(client interfaces.IDynamodbClient) *DynamoDB {
+	return &DynamoDB{
+		client: client,
+	}
 }
 
 type DynamoDB struct {
+	client interfaces.IDynamodbClient
 }
 
 func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, error) {
@@ -29,8 +30,7 @@ func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, e
 		},
 	}
 
-	client := createClient(context)
-	output, err := client.GetItem(context, input)
+	output, err := d.client.GetItem(context, input)
 	if err != nil {
 		return result, err
 	}
@@ -39,19 +39,4 @@ func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, e
 	err = attributevalue.UnmarshalMap(dynamoItem, &result)
 
 	return result, err
-}
-
-func createClient(context context.Context) *dynamodb.Client {
-	cfg, err := config.LoadDefaultConfig(
-		context,
-		config.WithRegion("us-east-1"),
-		config.WithBaseEndpoint("http://localstack:4566"),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider("test", "test", "")),
-	)
-
-	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
-	}
-
-	return dynamodb.NewFromConfig(cfg)
 }

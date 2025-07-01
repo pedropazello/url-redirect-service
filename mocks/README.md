@@ -5,6 +5,7 @@ This directory contains mocks generated using [mockery](https://github.com/vektr
 ## Generated Mocks
 
 - `IDB.go` - Mock for `interfaces.IDB`
+- `IDynamodbClient.go` - Mock for `interfaces.IDynamodbClient`
 - `IRedirectsRepository.go` - Mock for `interfaces.IRedirectsRepository` 
 - `IRedirectUsecase.go` - Mock for `interfaces.IRedirectUsecase`
 
