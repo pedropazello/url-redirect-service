@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pedropazello/url-redirect-service/controllers"
 	"github.com/pedropazello/url-redirect-service/infra/db"
@@ -10,9 +12,11 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
 	router := gin.Default()
 
-	db := db.NewDynamoDB()
+	dynamoClient := db.NewDynamoDBClient(ctx)
+	db := db.NewDynamoDB(dynamoClient)
 	redirectRepository := repositories.NewRedirectsRepository(db)
 	redirectUseCase := usecases.NewRedirectURLtUseCase(redirectRepository)
 	redirectController := controllers.NewRedirectController(redirectUseCase)

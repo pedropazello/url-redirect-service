@@ -9,7 +9,7 @@ services:
       - PORT=8080
     volumes:
       - .:/app
-    command: go run cmd/main.go
+    command: go run cmd/server/main.go
 
   localstack:
     image: localstack/localstack:4.3.0

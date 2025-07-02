@@ -21,11 +21,11 @@ type DynamoDB struct {
 	client interfaces.IDynamodbClient
 }
 
-func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, error) {
+func (d DynamoDB) GetItem(context context.Context, tableName string, Id string) (map[string]any, error) {
 	var result map[string]any
 
 	input := &dynamodb.GetItemInput{
-		TableName: aws.String("Redirects"),
+		TableName: aws.String(tableName),
 		Key: map[string]types.AttributeValue{
 			"Id": &types.AttributeValueMemberS{Value: Id},
 		},
@@ -42,7 +42,7 @@ func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, e
 	return result, err
 }
 
-func (d DynamoDB) CreateItem(context context.Context, insertion map[string]any) (map[string]any, error) {
+func (d DynamoDB) CreateItem(context context.Context, tableName string, insertion map[string]any) (map[string]any, error) {
 	itens := make(map[string]types.AttributeValue)
 
 	for k, v := range insertion {
@@ -55,7 +55,7 @@ func (d DynamoDB) CreateItem(context context.Context, insertion map[string]any) 
 	}
 
 	input := &dynamodb.PutItemInput{
-		TableName: aws.String("Redirects"),
+		TableName: aws.String(tableName),
 		Item:      itens,
 	}
 

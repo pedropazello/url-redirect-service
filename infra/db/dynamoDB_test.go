@@ -14,6 +14,7 @@ import (
 )
 
 var ctx context.Context
+var tableName string
 var clientMock mocks.IDynamodbClient
 var dynamoDB *db.DynamoDB
 var getInput *dynamodb.GetItemInput
@@ -21,6 +22,7 @@ var putInput *dynamodb.PutItemInput
 
 func setup(_ *testing.T) {
 	ctx = context.Background()
+	tableName = "Redirects"
 	clientMock = mocks.IDynamodbClient{}
 	dynamoDB = db.NewDynamoDB(&clientMock)
 	getInput = &dynamodb.GetItemInput{
@@ -51,7 +53,7 @@ func TestGetItem_Success(t *testing.T) {
 
 	clientMock.EXPECT().GetItem(ctx, getInput).Return(output, nil)
 
-	result, err := dynamoDB.GetItem(ctx, "1")
+	result, err := dynamoDB.GetItem(ctx, tableName, "1")
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "1", result["Id"].(string))
@@ -65,7 +67,7 @@ func TestGetItem_Error(t *testing.T) {
 	expectedErr := errors.New("connection error")
 
 	clientMock.EXPECT().GetItem(ctx, getInput).Return(output, expectedErr)
-	result, err := dynamoDB.GetItem(ctx, "1")
+	result, err := dynamoDB.GetItem(ctx, tableName, "1")
 
 	assert.Equal(t, expectedErr, err)
 	assert.Equal(t, nil, result["Id"])
@@ -82,7 +84,7 @@ func TestCreateItem_Success(t *testing.T) {
 		"RedirectToURL": "http://foo.com",
 	}
 
-	result, err := dynamoDB.CreateItem(ctx, dbInsert)
+	result, err := dynamoDB.CreateItem(ctx, tableName, dbInsert)
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "1", result["Id"])
@@ -100,7 +102,7 @@ func TestCreateItem_Error(t *testing.T) {
 		"RedirectToURL": "http://foo.com",
 	}
 
-	_, err := dynamoDB.CreateItem(ctx, dbInsert)
+	_, err := dynamoDB.CreateItem(ctx, tableName, dbInsert)
 
 	assert.Equal(t, expectedErr, err)
 }
