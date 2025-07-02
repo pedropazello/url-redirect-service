@@ -9,6 +9,8 @@ import (
 	"github.com/pedropazello/url-redirect-service/interfaces"
 )
 
+const TableName string = "Redirects"
+
 func NewRedirectsRepository(db interfaces.IDB) *RedirectsRepository {
 	return &RedirectsRepository{
 		db: db,
@@ -23,7 +25,7 @@ func (r RedirectsRepository) GetItem(context context.Context, Id string) (entiti
 	redirect := entities.Redirect{}
 	var err error
 
-	result, err := r.db.GetItem(context, Id)
+	result, err := r.db.GetItem(context, TableName, Id)
 	if err == nil {
 		redirect, err = dbResultToRedirect(result)
 	}
@@ -37,7 +39,7 @@ func (r RedirectsRepository) CreateItem(context context.Context, redirect entiti
 		return redirect, err
 	}
 
-	result, err := r.db.CreateItem(context, insertDB)
+	result, err := r.db.CreateItem(context, TableName, insertDB)
 	if err == nil {
 		redirect, err = dbResultToRedirect(result)
 	}

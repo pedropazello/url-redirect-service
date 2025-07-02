@@ -13,10 +13,12 @@ import (
 
 var mockDB *mocks.IDB
 var redirectRepository *repositories.RedirectsRepository
+var tableName string
 
 func setup(t *testing.T) {
 	mockDB = mocks.NewIDB(t)
 	redirectRepository = repositories.NewRedirectsRepository(mockDB)
+	tableName = "Redirects"
 }
 
 func TestGetItem_Success(t *testing.T) {
@@ -27,7 +29,7 @@ func TestGetItem_Success(t *testing.T) {
 		"RedirectToURL": "http://foo.com",
 	}
 
-	mockDB.EXPECT().GetItem(context.Background(), "1").Return(dbResult, nil)
+	mockDB.EXPECT().GetItem(context.Background(), tableName, "1").Return(dbResult, nil)
 	resp, err := redirectRepository.GetItem(context.Background(), "1")
 
 	assert.Equal(t, nil, err)
@@ -40,7 +42,7 @@ func TestGetItem_Error(t *testing.T) {
 	var dbResult map[string]any
 	expectedErr := errors.New("Failed to get item: not found")
 
-	mockDB.EXPECT().GetItem(context.Background(), "1").Return(dbResult, expectedErr)
+	mockDB.EXPECT().GetItem(context.Background(), tableName, "1").Return(dbResult, expectedErr)
 	resp, err := redirectRepository.GetItem(context.Background(), "1")
 
 	assert.Equal(t, expectedErr, err)
@@ -54,7 +56,7 @@ func TestGetItem_DifferentDocumentFormat(t *testing.T) {
 		"Id": "1",
 	}
 
-	mockDB.EXPECT().GetItem(context.Background(), "1").Return(dbResult, nil)
+	mockDB.EXPECT().GetItem(context.Background(), tableName, "1").Return(dbResult, nil)
 	resp, err := redirectRepository.GetItem(context.Background(), "1")
 
 	assert.Equal(t, errors.New("[RedirectToURL] field not found"), err)
@@ -76,7 +78,7 @@ func TestCreateItem_Success(t *testing.T) {
 		"RedirectToURL": "http://foo.com",
 	}
 
-	mockDB.EXPECT().CreateItem(context.Background(), dbInsert).Return(dbResult, nil)
+	mockDB.EXPECT().CreateItem(context.Background(), tableName, dbInsert).Return(dbResult, nil)
 	resp, err := redirectRepository.CreateItem(context.Background(), redirect)
 
 	assert.Equal(t, nil, err)

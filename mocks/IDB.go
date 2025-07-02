@@ -21,9 +21,9 @@ func (_m *IDB) EXPECT() *IDB_Expecter {
 	return &IDB_Expecter{mock: &_m.Mock}
 }
 
-// CreateItem provides a mock function with given fields: _a0, insertion
-func (_m *IDB) CreateItem(_a0 context.Context, insertion map[string]any) (map[string]any, error) {
-	ret := _m.Called(_a0, insertion)
+// CreateItem provides a mock function with given fields: _a0, tableName, insertion
+func (_m *IDB) CreateItem(_a0 context.Context, tableName string, insertion map[string]any) (map[string]any, error) {
+	ret := _m.Called(_a0, tableName, insertion)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateItem")
@@ -31,19 +31,19 @@ func (_m *IDB) CreateItem(_a0 context.Context, insertion map[string]any) (map[st
 
 	var r0 map[string]any
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, map[string]any) (map[string]any, error)); ok {
-		return rf(_a0, insertion)
+	if rf, ok := ret.Get(0).(func(context.Context, string, map[string]any) (map[string]any, error)); ok {
+		return rf(_a0, tableName, insertion)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, map[string]any) map[string]any); ok {
-		r0 = rf(_a0, insertion)
+	if rf, ok := ret.Get(0).(func(context.Context, string, map[string]any) map[string]any); ok {
+		r0 = rf(_a0, tableName, insertion)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]any)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, map[string]any) error); ok {
-		r1 = rf(_a0, insertion)
+	if rf, ok := ret.Get(1).(func(context.Context, string, map[string]any) error); ok {
+		r1 = rf(_a0, tableName, insertion)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -58,14 +58,15 @@ type IDB_CreateItem_Call struct {
 
 // CreateItem is a helper method to define mock.On call
 //   - _a0 context.Context
+//   - tableName string
 //   - insertion map[string]any
-func (_e *IDB_Expecter) CreateItem(_a0 interface{}, insertion interface{}) *IDB_CreateItem_Call {
-	return &IDB_CreateItem_Call{Call: _e.mock.On("CreateItem", _a0, insertion)}
+func (_e *IDB_Expecter) CreateItem(_a0 interface{}, tableName interface{}, insertion interface{}) *IDB_CreateItem_Call {
+	return &IDB_CreateItem_Call{Call: _e.mock.On("CreateItem", _a0, tableName, insertion)}
 }
 
-func (_c *IDB_CreateItem_Call) Run(run func(_a0 context.Context, insertion map[string]any)) *IDB_CreateItem_Call {
+func (_c *IDB_CreateItem_Call) Run(run func(_a0 context.Context, tableName string, insertion map[string]any)) *IDB_CreateItem_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(map[string]any))
+		run(args[0].(context.Context), args[1].(string), args[2].(map[string]any))
 	})
 	return _c
 }
@@ -75,14 +76,14 @@ func (_c *IDB_CreateItem_Call) Return(_a0 map[string]any, _a1 error) *IDB_Create
 	return _c
 }
 
-func (_c *IDB_CreateItem_Call) RunAndReturn(run func(context.Context, map[string]any) (map[string]any, error)) *IDB_CreateItem_Call {
+func (_c *IDB_CreateItem_Call) RunAndReturn(run func(context.Context, string, map[string]any) (map[string]any, error)) *IDB_CreateItem_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetItem provides a mock function with given fields: _a0, Id
-func (_m *IDB) GetItem(_a0 context.Context, Id string) (map[string]any, error) {
-	ret := _m.Called(_a0, Id)
+// GetItem provides a mock function with given fields: _a0, tableName, Id
+func (_m *IDB) GetItem(_a0 context.Context, tableName string, Id string) (map[string]any, error) {
+	ret := _m.Called(_a0, tableName, Id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetItem")
@@ -90,19 +91,19 @@ func (_m *IDB) GetItem(_a0 context.Context, Id string) (map[string]any, error) {
 
 	var r0 map[string]any
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (map[string]any, error)); ok {
-		return rf(_a0, Id)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (map[string]any, error)); ok {
+		return rf(_a0, tableName, Id)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) map[string]any); ok {
-		r0 = rf(_a0, Id)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) map[string]any); ok {
+		r0 = rf(_a0, tableName, Id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(map[string]any)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(_a0, Id)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(_a0, tableName, Id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -117,14 +118,15 @@ type IDB_GetItem_Call struct {
 
 // GetItem is a helper method to define mock.On call
 //   - _a0 context.Context
+//   - tableName string
 //   - Id string
-func (_e *IDB_Expecter) GetItem(_a0 interface{}, Id interface{}) *IDB_GetItem_Call {
-	return &IDB_GetItem_Call{Call: _e.mock.On("GetItem", _a0, Id)}
+func (_e *IDB_Expecter) GetItem(_a0 interface{}, tableName interface{}, Id interface{}) *IDB_GetItem_Call {
+	return &IDB_GetItem_Call{Call: _e.mock.On("GetItem", _a0, tableName, Id)}
 }
 
-func (_c *IDB_GetItem_Call) Run(run func(_a0 context.Context, Id string)) *IDB_GetItem_Call {
+func (_c *IDB_GetItem_Call) Run(run func(_a0 context.Context, tableName string, Id string)) *IDB_GetItem_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -134,7 +136,7 @@ func (_c *IDB_GetItem_Call) Return(_a0 map[string]any, _a1 error) *IDB_GetItem_C
 	return _c
 }
 
-func (_c *IDB_GetItem_Call) RunAndReturn(run func(context.Context, string) (map[string]any, error)) *IDB_GetItem_Call {
+func (_c *IDB_GetItem_Call) RunAndReturn(run func(context.Context, string, string) (map[string]any, error)) *IDB_GetItem_Call {
 	_c.Call.Return(run)
 	return _c
 }
