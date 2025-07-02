@@ -13,12 +13,14 @@ import (
 	"github.com/pedropazello/url-redirect-service/mocks"
 )
 
+var ctx context.Context
 var clientMock mocks.IDynamodbClient
 var dynamoDB *db.DynamoDB
 var getInput *dynamodb.GetItemInput
 var putInput *dynamodb.PutItemInput
 
 func setup(_ *testing.T) {
+	ctx = context.Background()
 	clientMock = mocks.IDynamodbClient{}
 	dynamoDB = db.NewDynamoDB(&clientMock)
 	getInput = &dynamodb.GetItemInput{
@@ -47,9 +49,9 @@ func TestGetItem_Success(t *testing.T) {
 		},
 	}
 
-	clientMock.EXPECT().GetItem(context.Background(), getInput).Return(output, nil)
+	clientMock.EXPECT().GetItem(ctx, getInput).Return(output, nil)
 
-	result, err := dynamoDB.GetItem(context.Background(), "1")
+	result, err := dynamoDB.GetItem(ctx, "1")
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "1", result["Id"].(string))
@@ -62,8 +64,8 @@ func TestGetItem_Error(t *testing.T) {
 	output := &dynamodb.GetItemOutput{}
 	expectedErr := errors.New("connection error")
 
-	clientMock.EXPECT().GetItem(context.Background(), getInput).Return(output, expectedErr)
-	result, err := dynamoDB.GetItem(context.Background(), "1")
+	clientMock.EXPECT().GetItem(ctx, getInput).Return(output, expectedErr)
+	result, err := dynamoDB.GetItem(ctx, "1")
 
 	assert.Equal(t, expectedErr, err)
 	assert.Equal(t, nil, result["Id"])
@@ -73,16 +75,32 @@ func TestGetItem_Error(t *testing.T) {
 func TestCreateItem_Success(t *testing.T) {
 	setup(t)
 
-	clientMock.EXPECT().PutItem(context.Background(), putInput).Return(&dynamodb.PutItemOutput{}, nil)
+	clientMock.EXPECT().PutItem(ctx, putInput).Return(&dynamodb.PutItemOutput{}, nil)
 
 	dbInsert := map[string]any{
 		"Id":            "1",
 		"RedirectToURL": "http://foo.com",
 	}
 
-	result, err := dynamoDB.CreateItem(context.Background(), dbInsert)
+	result, err := dynamoDB.CreateItem(ctx, dbInsert)
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "1", result["Id"])
 	assert.Equal(t, "http://foo.com", result["RedirectToURL"])
+}
+
+func TestCreateItem_Error(t *testing.T) {
+	setup(t)
+	expectedErr := errors.New("connection error")
+
+	clientMock.EXPECT().PutItem(ctx, putInput).Return(&dynamodb.PutItemOutput{}, expectedErr)
+
+	dbInsert := map[string]any{
+		"Id":            "1",
+		"RedirectToURL": "http://foo.com",
+	}
+
+	_, err := dynamoDB.CreateItem(ctx, dbInsert)
+
+	assert.Equal(t, expectedErr, err)
 }
