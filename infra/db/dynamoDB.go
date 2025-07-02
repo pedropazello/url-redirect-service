@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -39,4 +40,26 @@ func (d DynamoDB) GetItem(context context.Context, Id string) (map[string]any, e
 	err = attributevalue.UnmarshalMap(dynamoItem, &result)
 
 	return result, err
+}
+
+func (d DynamoDB) CreateItem(context context.Context, insertion map[string]any) (map[string]any, error) {
+	itens := make(map[string]types.AttributeValue)
+
+	for k, v := range insertion {
+		switch val := v.(type) {
+		case string:
+			itens[k] = &types.AttributeValueMemberS{Value: val}
+		default:
+			return insertion, fmt.Errorf("unsupported type for key %s: %T", k, v)
+		}
+	}
+
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String("Redirects"),
+		Item:      itens,
+	}
+
+	_, err := d.client.PutItem(context, input)
+
+	return insertion, err
 }

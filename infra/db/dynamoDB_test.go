@@ -15,15 +15,24 @@ import (
 
 var clientMock mocks.IDynamodbClient
 var dynamoDB *db.DynamoDB
-var input *dynamodb.GetItemInput
+var getInput *dynamodb.GetItemInput
+var putInput *dynamodb.PutItemInput
 
 func setup(_ *testing.T) {
 	clientMock = mocks.IDynamodbClient{}
 	dynamoDB = db.NewDynamoDB(&clientMock)
-	input = &dynamodb.GetItemInput{
+	getInput = &dynamodb.GetItemInput{
 		TableName: aws.String("Redirects"),
 		Key: map[string]types.AttributeValue{
 			"Id": &types.AttributeValueMemberS{Value: "1"},
+		},
+	}
+
+	putInput = &dynamodb.PutItemInput{
+		TableName: aws.String("Redirects"),
+		Item: map[string]types.AttributeValue{
+			"Id":            &types.AttributeValueMemberS{Value: "1"},
+			"RedirectToURL": &types.AttributeValueMemberS{Value: "http://foo.com"},
 		},
 	}
 }
@@ -38,7 +47,7 @@ func TestGetItem_Success(t *testing.T) {
 		},
 	}
 
-	clientMock.EXPECT().GetItem(context.Background(), input).Return(output, nil)
+	clientMock.EXPECT().GetItem(context.Background(), getInput).Return(output, nil)
 
 	result, err := dynamoDB.GetItem(context.Background(), "1")
 
@@ -53,10 +62,27 @@ func TestGetItem_Error(t *testing.T) {
 	output := &dynamodb.GetItemOutput{}
 	expectedErr := errors.New("connection error")
 
-	clientMock.EXPECT().GetItem(context.Background(), input).Return(output, expectedErr)
+	clientMock.EXPECT().GetItem(context.Background(), getInput).Return(output, expectedErr)
 	result, err := dynamoDB.GetItem(context.Background(), "1")
 
 	assert.Equal(t, expectedErr, err)
 	assert.Equal(t, nil, result["Id"])
 	assert.Equal(t, nil, result["RedirectToURL"])
+}
+
+func TestCreateItem_Success(t *testing.T) {
+	setup(t)
+
+	clientMock.EXPECT().PutItem(context.Background(), putInput).Return(&dynamodb.PutItemOutput{}, nil)
+
+	dbInsert := map[string]any{
+		"Id":            "1",
+		"RedirectToURL": "http://foo.com",
+	}
+
+	result, err := dynamoDB.CreateItem(context.Background(), dbInsert)
+
+	assert.Equal(t, nil, err)
+	assert.Equal(t, "1", result["Id"])
+	assert.Equal(t, "http://foo.com", result["RedirectToURL"])
 }
