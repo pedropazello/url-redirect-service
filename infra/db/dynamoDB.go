@@ -55,8 +55,9 @@ func (d DynamoDB) CreateItem(context context.Context, tableName string, insertio
 	}
 
 	input := &dynamodb.PutItemInput{
-		TableName: aws.String(tableName),
-		Item:      itens,
+		TableName:           aws.String(tableName),
+		Item:                itens,
+		ConditionExpression: aws.String("attribute_not_exists(Id)"),
 	}
 
 	_, err := d.client.PutItem(context, input)
