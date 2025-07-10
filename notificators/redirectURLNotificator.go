@@ -6,23 +6,23 @@ import (
 	"fmt"
 
 	"github.com/pedropazello/url-redirect-service/entities"
-	"github.com/pedropazello/url-redirect-service/infra/topics"
 	"github.com/pedropazello/url-redirect-service/interfaces"
 )
 
 type redirectPerformedNotificator struct {
+	topic interfaces.ITopic
 }
 
-func NewRedirectPerformedNotificator() interfaces.IRedirectPerformedNotificator {
-	return &redirectPerformedNotificator{}
+func NewRedirectPerformedNotificator(topic interfaces.ITopic) interfaces.IRedirectPerformedNotificator {
+	return &redirectPerformedNotificator{
+		topic: topic,
+	}
 }
 
 func (r *redirectPerformedNotificator) Notificate(ctx context.Context, redirect entities.Redirect) error {
 	redirectAsJSON, _ := json.Marshal(redirect)
 
-	client := topics.NewSNSClient(ctx)
-	topic := topics.NewSNSTopic(client, "arn:aws:sns:us-east-1:000000000000:redirect_performed_topic")
-	msgID, err := topic.Publish(ctx, string(redirectAsJSON))
+	msgID, err := r.topic.Publish(ctx, string(redirectAsJSON))
 
 	fmt.Println(msgID)
 

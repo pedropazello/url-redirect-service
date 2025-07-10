@@ -21,3 +21,6 @@ packages:
       IRedirectPerformedNotificator:
         config:
           dir: "mocks"
+      ITopic:
+        config:
+          dir: "mocks"

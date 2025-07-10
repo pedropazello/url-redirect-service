@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pedropazello/url-redirect-service/controllers"
 	"github.com/pedropazello/url-redirect-service/infra/db"
+	"github.com/pedropazello/url-redirect-service/infra/topics"
+	"github.com/pedropazello/url-redirect-service/notificators"
 	"github.com/pedropazello/url-redirect-service/repositories"
 	"github.com/pedropazello/url-redirect-service/routes"
 	"github.com/pedropazello/url-redirect-service/usecases"
@@ -18,7 +20,12 @@ func main() {
 	dynamoClient := db.NewDynamoDBClient(ctx)
 	db := db.NewDynamoDB(dynamoClient)
 	redirectRepository := repositories.NewRedirectsRepository(db)
-	redirectUseCase := usecases.NewRedirectURLtUseCase(redirectRepository)
+
+	snsClient := topics.NewSNSClient(ctx)
+	topic := topics.NewSNSTopic(snsClient, "arn:aws:sns:us-east-1:000000000000:redirect_performed_topic")
+	redirectPerformedNotificator := notificators.NewRedirectPerformedNotificator(topic)
+
+	redirectUseCase := usecases.NewRedirectURLtUseCase(redirectRepository, redirectPerformedNotificator)
 	redirectController := controllers.NewRedirectController(redirectUseCase)
 	routes := routes.NewRoutes(redirectController)
 
