@@ -38,6 +38,7 @@ func setup(_ *testing.T) {
 			"Id":            &types.AttributeValueMemberS{Value: "1"},
 			"RedirectToURL": &types.AttributeValueMemberS{Value: "http://foo.com"},
 		},
+		ConditionExpression: aws.String("attribute_not_exists(Id)"),
 	}
 }
 

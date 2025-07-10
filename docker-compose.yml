@@ -16,7 +16,7 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=dynamodb
+      - SERVICES=dynamodb,sqs,sns
       - DEBUG=1
       - LOCALSTACK_HOST=localhost
       - AWS_DEFAULT_REGION=us-east-1

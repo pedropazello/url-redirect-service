@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 
 	"github.com/pedropazello/url-redirect-service/entities"
@@ -34,7 +33,7 @@ func (r RedirectsRepository) GetItem(context context.Context, Id string) (entiti
 }
 
 func (r RedirectsRepository) CreateItem(context context.Context, redirect entities.Redirect) (entities.Redirect, error) {
-	insertDB, err := redirectToHash(redirect)
+	insertDB, err := redirect.ToHash()
 	if err != nil {
 		return redirect, err
 	}
@@ -45,18 +44,6 @@ func (r RedirectsRepository) CreateItem(context context.Context, redirect entiti
 	}
 
 	return redirect, err
-}
-
-func redirectToHash(redirect entities.Redirect) (map[string]any, error) {
-	var insertDB map[string]any
-	var err error
-
-	data, err := json.Marshal(redirect)
-	if err == nil {
-		err = json.Unmarshal(data, &insertDB)
-	}
-
-	return insertDB, err
 }
 
 func dbResultToRedirect(result map[string]any) (entities.Redirect, error) {

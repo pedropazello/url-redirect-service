@@ -13,11 +13,13 @@ import (
 )
 
 var mockRepo *mocks.IRedirectsRepository
+var mockNotificator *mocks.IRedirectPerformedNotificator
 var useCase *usecases.RedirectURLUseCase
 
 func setup(t *testing.T) {
 	mockRepo = mocks.NewIRedirectsRepository(t)
-	useCase = usecases.NewRedirectURLtUseCase(mockRepo)
+	mockNotificator = mocks.NewIRedirectPerformedNotificator(t)
+	useCase = usecases.NewRedirectURLtUseCase(mockRepo, mockNotificator)
 }
 
 func TestRedirectURLUseCase_Execute_Success(t *testing.T) {
@@ -26,6 +28,7 @@ func TestRedirectURLUseCase_Execute_Success(t *testing.T) {
 	expectedURL := "https://example.com"
 	expectedRedirect := entities.Redirect{RedirectToURL: expectedURL}
 	mockRepo.EXPECT().GetItem(context.Background(), "/foo").Return(expectedRedirect, nil)
+	mockNotificator.EXPECT().Notificate(context.Background(), expectedRedirect).Return(nil)
 
 	url, err := useCase.Execute(context.Background(), "/foo")
 	assert.NoError(t, err)
@@ -41,4 +44,19 @@ func TestRedirectURLUseCase_Execute_Error(t *testing.T) {
 	url, err := useCase.Execute(context.Background(), "/bar")
 	assert.Error(t, err)
 	assert.Empty(t, url)
+}
+
+func TestRedirectURLUseCase_Execute_Notificator_Failed(t *testing.T) {
+	setup(t)
+
+	err := errors.New("notification failed")
+
+	expectedURL := "https://example.com"
+	expectedRedirect := entities.Redirect{RedirectToURL: expectedURL}
+	mockRepo.EXPECT().GetItem(context.Background(), "/foo").Return(expectedRedirect, nil)
+	mockNotificator.EXPECT().Notificate(context.Background(), expectedRedirect).Return(err)
+
+	url, err := useCase.Execute(context.Background(), "/foo")
+	assert.NoError(t, err)
+	assert.Equal(t, expectedURL, url)
 }
