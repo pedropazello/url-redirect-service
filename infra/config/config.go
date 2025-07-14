@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 )
 
-func LoadDefaultConfig(ctx context.Context) (aws.Config, error) {
+func LoadAWSConfig(ctx context.Context) (aws.Config, error) {
 	return config.LoadDefaultConfig(
 		ctx,
 		config.WithRegion("us-east-1"),

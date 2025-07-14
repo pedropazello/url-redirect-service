@@ -34,6 +34,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.10.17 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sns v1.34.7
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.38.8
 	github.com/aws/smithy-go v1.22.4 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect

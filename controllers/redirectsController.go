@@ -31,5 +31,7 @@ func (rc *RedirectController) GetRedirects(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(err)
+
 	c.String(http.StatusNotFound, "No redirection found for path: %s", path)
 }

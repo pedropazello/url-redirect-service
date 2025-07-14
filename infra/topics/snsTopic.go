@@ -24,7 +24,6 @@ func (t *snsTopic) Publish(ctx context.Context, msg string) (string, error) {
 		Message:  aws.String(msg),
 		TopicArn: &t.topicName,
 	})
-
 	if err != nil {
 		return "", err
 	}
