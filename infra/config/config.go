@@ -19,7 +19,10 @@ func LoadAWSConfig(ctx context.Context) (aws.Config, error) {
 		)
 	}
 
-	return config.LoadDefaultConfig(ctx)
+	return config.LoadDefaultConfig(
+		ctx,
+		config.WithRegion("us-east-2"),
+	)
 }
 
 func Environment() string {
