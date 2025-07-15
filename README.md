@@ -13,9 +13,9 @@
    ```
 
 2. Test the endpoints:
-   - Health check: http://localhost:8080/health
-   - Demo redirect: http://localhost:8080/redirect/demo
-   - Service info: http://localhost:8080/
+   - Health check: http://localhost:80/health
+   - Demo redirect: http://localhost:80/redirect/demo
+   - Service info: http://localhost:80/
 
 ## Development
 The service includes:

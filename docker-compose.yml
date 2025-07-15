@@ -4,12 +4,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "80:80"
     environment:
-      - PORT=8080
+      - PORT=80
     volumes:
       - .:/app
-    command: go run cmd/server/main.go
 
   localstack:
     image: localstack/localstack:4.3.0
