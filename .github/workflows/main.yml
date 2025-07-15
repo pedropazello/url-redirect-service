@@ -44,12 +44,25 @@ jobs:
         docker push $IMAGE_URI
         echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
-    - name: Download current ECS task definition
+    - name: Download and clean task definition
       run: |
         aws ecs describe-task-definition \
           --task-definition ${{ env.TASK_DEFINITION_FAMILY }} \
-          --query taskDefinition \
-          > task-definition.json
+          --query 'taskDefinition' \
+          > raw-task-definition.json
+
+        cat raw-task-definition.json | jq '{
+          family,
+          containerDefinitions,
+          executionRoleArn,
+          taskRoleArn,
+          networkMode,
+          volumes,
+          placementConstraints,
+          requiresCompatibilities,
+          cpu,
+          memory
+        }' > task-definition.json
 
     - name: Fill in new image in ECS task definition
       id: task-def
