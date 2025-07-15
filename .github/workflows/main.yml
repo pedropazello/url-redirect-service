@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: url-redirect-service
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ECS_CLUSTER: url-redirect-service
   ECS_SERVICE: url-redirect-service-web
   CONTAINER_NAME: url-redirect-service-web
