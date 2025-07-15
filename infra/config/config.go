@@ -36,3 +36,7 @@ func IsProduction() bool {
 func IsDevelopment() bool {
 	return Environment() == "development"
 }
+
+func RedirectPerformedTopicARN() string {
+	return os.Getenv("REDIRECT_PERFORMED_TOPIC_ARN")
+}

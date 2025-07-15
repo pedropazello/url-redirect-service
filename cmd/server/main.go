@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pedropazello/url-redirect-service/controllers"
+	"github.com/pedropazello/url-redirect-service/infra/config"
 	"github.com/pedropazello/url-redirect-service/infra/db"
 	"github.com/pedropazello/url-redirect-service/infra/topics"
 	"github.com/pedropazello/url-redirect-service/notificators"
@@ -22,7 +23,7 @@ func main() {
 	redirectRepository := repositories.NewRedirectsRepository(db)
 
 	snsClient := topics.NewSNSClient(ctx)
-	topic := topics.NewSNSTopic(snsClient, "arn:aws:sns:us-east-1:000000000000:redirect_performed_topic")
+	topic := topics.NewSNSTopic(snsClient, config.RedirectPerformedTopicARN())
 	redirectPerformedNotificator := notificators.NewRedirectPerformedNotificator(topic)
 
 	redirectUseCase := usecases.NewRedirectURLtUseCase(redirectRepository, redirectPerformedNotificator)
