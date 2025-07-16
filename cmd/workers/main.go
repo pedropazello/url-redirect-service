@@ -28,14 +28,25 @@ func main() {
 	redirectPerformedCounterUpdateChannel := make(chan entities.Redirect)
 	redirectPerformedMetricsChannel := make(chan entities.Redirect)
 
+	go workers.RedirectCounterUpdateWorkerPerform(redirectPerformedCounterUpdateChannel)
+	go workers.SendRedirectMetricsWorkerPerform(redirectPerformedMetricsChannel)
+
+	semaphore := make(chan struct{}, 9)
+
+	go startPolling(ctx, client, redirectPerformedCounterUpdateChannel, config.RedirectPerformedCounterUpdateQueueURL(), semaphore)
+	go startPolling(ctx, client, redirectPerformedMetricsChannel, config.RedirectPerformedMetricsQueueURL(), semaphore)
+
+	select {}
+}
+
+func startPolling(ctx context.Context, client *sqs.Client, ch chan entities.Redirect, queueURL string, semaphore chan struct{}) {
 	for {
-		go workers.RedirectCounterUpdateWorkerPerform(redirectPerformedCounterUpdateChannel)
-		go workers.SendRedirectMetricsWorkerPerform(redirectPerformedMetricsChannel)
-
-		go poolMessagesFor(ctx, client, redirectPerformedCounterUpdateChannel, config.RedirectPerformedCounterUpdateQueueURL())
-		go poolMessagesFor(ctx, client, redirectPerformedMetricsChannel, config.RedirectPerformedMetricsQueueURL())
-
-		time.Sleep(2 * time.Second)
+		semaphore <- struct{}{}
+		go func() {
+			defer func() { <-semaphore }()
+			poolMessagesFor(ctx, client, ch, queueURL)
+		}()
+		time.Sleep(1 * time.Second)
 	}
 }
 
