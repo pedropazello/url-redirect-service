@@ -32,8 +32,8 @@ func main() {
 		go workers.RedirectCounterUpdateWorkerPerform(redirectPerformedCounterUpdateChannel)
 		go workers.SendRedirectMetricsWorkerPerform(redirectPerformedMetricsChannel)
 
-		go poolMessagesFor(ctx, client, redirectPerformedCounterUpdateChannel, "http://sqs.us-east-1.localhost:4566/000000000000/redirect_performed_counter_update_queue")
-		go poolMessagesFor(ctx, client, redirectPerformedMetricsChannel, "http://sqs.us-east-1.localhost:4566/000000000000/redirect_performed_metrics_queue")
+		go poolMessagesFor(ctx, client, redirectPerformedCounterUpdateChannel, config.RedirectPerformedCounterUpdateQueueURL())
+		go poolMessagesFor(ctx, client, redirectPerformedMetricsChannel, config.RedirectPerformedMetricsQueueURL())
 
 		time.Sleep(2 * time.Second)
 	}

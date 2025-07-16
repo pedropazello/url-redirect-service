@@ -48,3 +48,11 @@ func ServerPort() string {
 		return ":8080"
 	}
 }
+
+func RedirectPerformedCounterUpdateQueueURL() string {
+	return os.Getenv("REDIRECT_PERFOMED_COUNTER_UPDATE_QUEUE_URL")
+}
+
+func RedirectPerformedMetricsQueueURL() string {
+	return os.Getenv("REDIRECT_PERFORMED_METRICS_QUEUE_URL")
+}
