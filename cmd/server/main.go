@@ -31,5 +31,5 @@ func main() {
 	routes := routes.NewRoutes(redirectController)
 
 	routes.RegisterRoutes(router)
-	router.Run(":80")
+	router.Run(config.ServerPort())
 }

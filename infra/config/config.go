@@ -40,3 +40,11 @@ func IsDevelopment() bool {
 func RedirectPerformedTopicARN() string {
 	return os.Getenv("REDIRECT_PERFORMED_TOPIC_ARN")
 }
+
+func ServerPort() string {
+	if IsProduction() {
+		return ":80"
+	} else {
+		return ":8080"
+	}
+}
