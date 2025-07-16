@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Deploy workers container to Amazon ECS
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
 
 env:
   AWS_REGION: us-east-2
-  ECR_REPOSITORY: url-redirect-service/web
+  ECR_REPOSITORY: url-redirect-service/workers
   ECS_CLUSTER: url-redirect-service
-  ECS_SERVICE: url-redirect-service-web
-  CONTAINER_NAME: url-redirect-service-web
-  TASK_DEFINITION_FAMILY: url-redirect-service-task-definition
+  ECS_SERVICE: url-redirect-service-workers
+  CONTAINER_NAME: url-redirect-service-workers
+  TASK_DEFINITION_FAMILY: url-redirect-service-workers-task-definition
 
 jobs:
   deploy:
@@ -40,7 +40,7 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
         IMAGE_URI=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
-        docker build -f Dockerfile.server -t $IMAGE_URI .
+        docker build -f Dockerfile.workers -t $IMAGE_URI .
         docker push $IMAGE_URI
         echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
